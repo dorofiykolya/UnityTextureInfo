@@ -30,8 +30,14 @@ namespace Dorofiy.TextureInfo
 
     private TextureChannelEditor SetData(string path, Texture2D texture2d)
     {
+      TextureImporter textureImporter = TextureImporter.GetAtPath(AssetDatabase.GetAssetPath(texture2d)) as TextureImporter;
+      var lastReadable = textureImporter.isReadable;
+      textureImporter.isReadable = true;
+      textureImporter.SaveAndReimport();
       _texture2d = new Texture2D(texture2d.width, texture2d.height);
-      _texture2d.LoadImage(File.ReadAllBytes(path));
+      _texture2d.SetPixels32(texture2d.GetPixels32());
+      textureImporter.isReadable = lastReadable;
+      textureImporter.SaveAndReimport();
       if (_renderTexture != null)
       {
         DestroyImmediate(_renderTexture, true);

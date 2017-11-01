@@ -32,7 +32,16 @@ namespace Dorofiy.TextureInfo
       Texture2D tex = new Texture2D(texture2d.width, texture2d.height);
       tex.LoadImage(File.ReadAllBytes(path));
 
-      _pixels = tex.GetPixels32();
+      TextureImporter textureImporter = TextureImporter.GetAtPath(AssetDatabase.GetAssetPath(texture2d)) as TextureImporter;
+      var lastReadable = textureImporter.isReadable;
+      textureImporter.isReadable = true;
+      textureImporter.SaveAndReimport();
+
+      _pixels = texture2d.GetPixels32();
+
+      textureImporter.isReadable = lastReadable;
+      textureImporter.SaveAndReimport();
+
       _histogramData = CalculateHistogram(_pixels, 256);
       _histogramTexture = null;
 
